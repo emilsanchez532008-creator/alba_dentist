@@ -18,10 +18,27 @@
   chips.forEach(function(x){x.setAttribute('aria-pressed',x===c)});
   cards.forEach(function(k){k.classList.toggle('dim',c.dataset.f!=='all'&&k.dataset.c!==c.dataset.f)});
  })});
- /* WhatsApp por servicio */
- $$('.wa-svc').forEach(function(a){
-  a.href='https://wa.me/'+WA+'?text='+encodeURIComponent('¡Hola! Me gustaría consultar el servicio de "'+a.dataset.s+'" en Alba Family Dental.');
-  a.target='_blank';a.rel='noopener';
+ /* Selección de servicio desde la tarjeta */
+ var serviceSelect=$('#s'),selectionFeedback=$('#selection-feedback'),selectionMessage=$('#selection-message'),serviceField=serviceSelect.closest('.f'),selectedCard=null;
+ $$('.service-booking').forEach(function(a){
+  a.addEventListener('click',function(e){
+   e.preventDefault();
+   var service=a.dataset.service;
+   serviceSelect.value=service;
+   if(serviceSelect.value!==service)return;
+   setErr('s','');
+   selectionMessage.textContent='Servicio seleccionado: '+service+'. Llena el resto del formulario para continuar.';
+   selectionFeedback.classList.remove('show');
+   requestAnimationFrame(function(){selectionFeedback.classList.add('show')});
+   serviceField.classList.add('service-selected');
+   window.setTimeout(function(){serviceField.classList.remove('service-selected')},1400);
+   if(selectedCard)selectedCard.classList.remove('service-selected');
+   selectedCard=a.closest('.bc');
+   var card=selectedCard;
+   card.classList.add('service-selected');
+   window.setTimeout(function(){card.classList.remove('service-selected')},1400);
+   form.scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'center'});
+  });
  });
  /* Avisos legales */
  $$('[data-modal]').forEach(function(b){b.addEventListener('click',function(){var m=$('#'+b.dataset.modal);m.classList.add('open');document.body.classList.add('lock')})});
